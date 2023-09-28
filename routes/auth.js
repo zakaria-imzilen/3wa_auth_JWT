@@ -2,15 +2,21 @@ const { Router } = require("express");
 const { body, validationResult } = require("express-validator");
 const { sign, verify } = require("jsonwebtoken");
 const fakeData = require("../fakeData");
+const verifyCSRF = require("../middlewares/verifyCSRF");
 
 const authRouter = Router();
 
 authRouter.get("/", (req, res, next) => {
-	res.render("auth");
+	const generetedToken = req.csrfToken(); // 2-1 Generate the Token
+
+	res.cookie("XSRF-TOKEN", generetedToken); // 2-2 Store the token in a cookie
+
+	res.render("auth", { csrf: generetedToken }); // 2- Hand the CSRF Token to the end user
 });
 
 authRouter.post(
 	"/signin",
+	verifyCSRF, // 3- Ensure the validation of the token passed in the body of the request
 	[
 		body("email").isEmail().withMessage("Invalid email").normalizeEmail(),
 		body("password").isStrongPassword().withMessage("Weak password"),

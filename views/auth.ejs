@@ -30,6 +30,7 @@
             <form action="/auth/signin" method="post">
                 <h1>Sign in</h1>
                 <span>or use your account</span>
+                <input type="hidden" name="_csrf" value="<%= csrf %>">
                 <input name="email" type="email" placeholder="Email" />
                 <input name="password" type="password" placeholder="Password" />
                 <button type="submit">Sign In</button>
